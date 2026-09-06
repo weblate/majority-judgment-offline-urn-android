@@ -59,11 +59,12 @@ val module = module {
     // Miscellaneous
     single {
         ExchangeUriService(
-            scheme = "mju",
-            domain = "",
-            // We'll get back to the https scheme later ; perhaps using another service?
-//            scheme = "https",
-//            domain = "mju.mieuxvoter.fr",
+            // Legacy mju:// scheme
+//            scheme = "mju",
+//            domain = "",
+            // Using the https:// scheme
+            scheme = "https",
+            domain = "mju.mieuxvoter.fr",
             pollRoutePathSegment = "p",
             ballotsRoutePathSegment = "b",
         )

@@ -47,9 +47,10 @@
             <!--
             ## Solution 2: Deep App Links
             As is recommended, we can use the https scheme and a domain we own.
-            Hmmm…  Maybe not.  Android needs a network call to verify the domain.
+            Android needs a network call to verify the domain (at install time).
             This sucks, as this app is expected to work 100% offline.
-            Also, we have not deployed (yet) the .well-known on the server.
+            We deployed the relevant file at:
+            https://mju.mieuxvoter.fr/.well-known/assetlinks.json
             -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
