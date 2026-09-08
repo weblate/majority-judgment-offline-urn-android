@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +26,7 @@ import com.illiouchine.jm.ui.composable.plot.utils.makeProposalsInitials
 import com.illiouchine.jm.ui.preview.PreviewDataFaker
 import com.illiouchine.jm.ui.theme.JmTheme
 import com.illiouchine.jm.ui.theme.Theme
+import com.illiouchine.jm.ui.theme.spacing
 
 // Shows how close (in the collective hearts of the judges) pairs of proposals are.
 // A proximity of +1 means that the two proposals received exactly the same grades in each ballot.
@@ -49,13 +52,17 @@ fun ProximitySpider(
     }
 
     SpiderChart(
-        modifier = modifier,
+        modifier = modifier
+            // TalkBack's default behavior here is just noise, as it is.
+            // Later on, we'll figure out a way to provide a more useful description.
+            .clearAndSetSemantics {},
         title = {
             Text(
-                stringResource(
+                modifier = Modifier.padding(bottom = Theme.spacing.small),
+                text = stringResource(
                     R.string.plot_title_proximity_with,
                     analysis.proposals[selectedProposalIndex]
-                )
+                ),
             )
         },
         // We are not using the legend because it yields a (min > max) error from the Koala lib.
@@ -70,7 +77,9 @@ fun ProximitySpider(
         onCategoryClick = onProposalSelected,
     )
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clearAndSetSemantics {},
     ) {
         Box(
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
