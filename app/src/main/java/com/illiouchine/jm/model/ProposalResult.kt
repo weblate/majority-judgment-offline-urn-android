@@ -14,6 +14,6 @@ fun ProposalResultInterface.toProposalResult(): ProposalResult {
         index = this.index,
         rank = this.rank,
         relativeMerit = this.relativeMerit,
-        analysis = this.analysis.toAnalysis()
+        analysis = this.analysis.toAnalysis(),
     )
 }

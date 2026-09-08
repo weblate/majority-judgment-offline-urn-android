@@ -1,2 +1,3 @@
 * Refactor daisy-chaining via QR codes
 * Refactor Composable previews to use dependency injection
+* Export results as raw text, for printing and sharing

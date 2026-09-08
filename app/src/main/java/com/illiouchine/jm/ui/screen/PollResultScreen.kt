@@ -1,5 +1,6 @@
 package com.illiouchine.jm.ui.screen
 
+import android.content.ClipData
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -8,6 +9,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -65,6 +69,7 @@ import com.illiouchine.jm.filters.NuanceBallotsFilter
 import com.illiouchine.jm.filters.ProposalGradeBallotsFilter
 import com.illiouchine.jm.logic.PollResultViewModel
 import com.illiouchine.jm.model.ProposalTally
+import com.illiouchine.jm.service.AsciiMeritProfile
 import com.illiouchine.jm.ui.composable.BallotCountRow
 import com.illiouchine.jm.ui.composable.LinearMeritProfileCanvas
 import com.illiouchine.jm.ui.composable.PollSubject
@@ -106,7 +111,7 @@ fun ResultScreen(
     val result = state.result!!
     val tally = state.tally!!
     val grading = poll.pollConfig.grading
-    val highestGradeToLowestGrade = state.highGradeOnLeft
+    val highGradeOnLeft = state.highGradeOnLeft
 
     val context = LocalContext.current
     val amountOfProposals = result.proposalResultsRanked.size
@@ -130,6 +135,10 @@ fun ResultScreen(
     var ballotsFiltersExpanded by rememberSaveable { mutableStateOf(false) }
     var newBallotsFilterDropdownExpanded by remember { mutableStateOf(false) }
 
+    val clipboard = LocalClipboard.current
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+
     MjuScaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = {
@@ -142,9 +151,6 @@ fun ResultScreen(
             )
         },
     ) { innerPadding ->
-
-        val scrollState = rememberScrollState()
-        val coroutineScope = rememberCoroutineScope()
 
         Column(
             modifier = modifier
@@ -334,7 +340,7 @@ fun ResultScreen(
                                     group.participant == proposalDisplayIndex
                                 }.toPersistentList(),
                                 showDecisiveGroups = isAnyProfileSelected,
-                                highestGradeOnTheLeft = highestGradeToLowestGrade,
+                                highestGradeOnTheLeft = highGradeOnLeft,
                             )
                         }
 
@@ -456,7 +462,7 @@ fun ResultScreen(
                         .height(Theme.spacing.medium + Theme.spacing.small),
                     proposalTally = pollTallyAsProposalTally,
                     grading = grading,
-                    highestGradeOnTheLeft = highestGradeToLowestGrade,
+                    highestGradeOnTheLeft = highGradeOnLeft,
                 )
                 MediumVerticalSpacer()
 
@@ -466,7 +472,7 @@ fun ResultScreen(
                         .fillMaxWidth(),
                     poll = poll,
                     tally = tally,
-                    highestGradeToLowestGrade = highestGradeToLowestGrade,
+                    highestGradeToLowestGrade = highGradeOnLeft,
                 )
                 PlotTitle(
                     text = stringResource(R.string.plot_title_opinion_profile),
@@ -482,7 +488,7 @@ fun ResultScreen(
                         .height(250.dp)
                         .fillMaxWidth(),
                     poll = poll,
-                    moreNuanceToLessNuance = highestGradeToLowestGrade,
+                    moreNuanceToLessNuance = highGradeOnLeft,
                 )
                 PlotTitle(
                     modifier = Modifier.padding(top = Theme.spacing.tiny),
@@ -552,6 +558,74 @@ fun ResultScreen(
                     MediumVerticalSpacer()
                 }
             }
+
+            val asciiMeritProfile = AsciiMeritProfile()
+            // Moving this to the ViewModel requires generating one of these per proportional algo.
+            val rawTextResults = buildString {
+                append(poll.pollConfig.subject)
+                append("\n")
+                append("\n")
+                result.proposalResultsRanked.forEachIndexed { _, proposalResult ->
+                    if (proposalResult.analysis.totalSize > BigInteger.ZERO) {
+                        val proposalName = poll.pollConfig.proposals[proposalResult.index]
+                        val medianGradeName = stringResource(
+                            id = poll.pollConfig.grading.getGradeName(
+                                gradeIndex = proposalResult.analysis.medianGrade,
+                            ),
+                        )
+                        append("#${proposalResult.rank}")
+                        append("  ")
+                        append(proposalName)
+                        append("  ")
+                        append("(${medianGradeName})")
+
+                        if (proportionalAlgorithm != ProportionalAlgorithms.NONE) {
+                            val shownProportion = state.proportions[proportionalAlgorithm]
+                            if (shownProportion != null) {
+                                val proportionAsText = String.format(
+                                    Locale.FRANCE,
+                                    "   %s%%",
+                                    (100 * shownProportion[proposalResult.index]).smartFormat(
+                                        maxDecimals = 2,
+                                    )
+                                )
+                                append(" ${proportionAsText}")
+                            }
+                        }
+
+                        append("\n")
+                        append(asciiMeritProfile.generate(
+                            tally = tally.proposalsTallies[proposalResult.index],
+                            grading = poll.pollConfig.grading,
+                            width = 13,
+                            highestGradeOnTheLeft = highGradeOnLeft,
+                        ))
+                        append("\n")
+                        append("\n")
+                    }
+                }
+            }
+            FlowRow {
+                TextButton(
+                    onClick = {
+                        coroutineScope.launch {
+                            clipboard.setClipEntry(
+                                ClipEntry(
+                                    ClipData.newPlainText(
+                                        "Results",
+                                        rawTextResults,
+                                    )
+                                )
+                            )
+                        }
+                    },
+                ) {
+                    Text(stringResource(R.string.button_export_as_printable_text))
+                }
+            }
+            SmallVerticalSpacer()
+//            Text(rawTextResults)
+//            SmallVerticalSpacer()
 
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
