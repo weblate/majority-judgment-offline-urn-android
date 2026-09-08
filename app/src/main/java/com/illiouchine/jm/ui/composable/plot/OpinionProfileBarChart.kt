@@ -8,14 +8,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.illiouchine.jm.R
 import com.illiouchine.jm.extensions.reversedIf
 import com.illiouchine.jm.extensions.smartFormat
 import com.illiouchine.jm.model.Poll
 import com.illiouchine.jm.model.Tally
+import com.illiouchine.jm.ui.composable.plot.component.PlotTitle
 import com.illiouchine.jm.ui.composable.plot.utils.favorIntLineCountForBars
 import com.illiouchine.jm.ui.theme.Theme
 import ir.ehsannarmani.compose_charts.ColumnChart
@@ -57,18 +63,38 @@ fun OpinionProfileBarChart(
                 values = listOf(
                     Bars.Data(
                         value = tally.proposalsTallies.sumOf { proposalTally ->
-                            proposalTally.tally[gradeIndex].toDouble()
-                        },
+                            proposalTally.tally[gradeIndex]
+                        }.toDouble(),
                         color = SolidColor(grade.color),
                     ),
                 ),
             )
         }.reversedIf(highestGradeToLowestGrade)
     }
+    val dataDescription = remember(poll, poll.ballots.size, highestGradeToLowestGrade) {
+        buildString {
+            poll.pollConfig.grading.grades
+                .reversedIf(highestGradeToLowestGrade)
+                .forEachIndexed { gradeIndex, grade ->
+                    val value = tally.proposalsTallies.sumOf { proposalTally ->
+                        proposalTally.tally[gradeIndex]
+                    }
+                    append("${value} ")
+                    @SuppressLint("LocalContextGetResourceValueCall")
+                    append(context.getString(grade.name))
+                    append(",\n")
+                }
+        }
+    }
+
     val horizontalLinesCount = favorIntLineCountForBars(barData)
 
     ColumnChart(
-        modifier = modifier,
+        modifier = modifier
+            // We need to fix the compose-chart lib upstream in order to show this.
+            // We do want to iterate over the labels, but we need to say the values too.
+            // We work around this by computing a textual data description (see PlotTitle below)
+            .clearAndSetSemantics {},
         data = barData,
         barProperties = BarProperties(
             thickness = 32.dp,
@@ -117,5 +143,17 @@ fun OpinionProfileBarChart(
 
     // Hotfix for bottom padding being too small when x-axis labels are rotated.
     // This must stay a magic value, since it's a hotfix hack and not theme related.
-    Spacer(modifier = Modifier.padding(vertical = 24.dp))
+    Spacer(modifier = Modifier.padding(vertical = 26.dp))
+
+    val plotTitle = stringResource(R.string.plot_title_opinion_profile)
+    PlotTitle(
+        modifier = Modifier.semantics {
+            contentDescription = buildString {
+                append(plotTitle)
+                append("\n")
+                append(dataDescription)
+            }
+        },
+        text = plotTitle,
+    )
 }

@@ -46,7 +46,9 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
@@ -389,7 +391,10 @@ fun ResultScreen(
 
                     Box {
                         val ttsChooseAProportionalAlgorithm = stringResource(
-                            R.string.tts_choose_a_proportional_algorithm
+                            id = R.string.tts_choose_a_proportional_algorithm,
+                        )
+                        val ttsProportionalAlgorithm = stringResource(
+                            id = R.string.proportional_algorithm,
                         )
                         TextButton(
                             modifier = Modifier.semantics {
@@ -414,7 +419,7 @@ fun ResultScreen(
                             for (algo in ProportionalAlgorithms.entries) {
                                 DropdownMenuItem(
                                     modifier = Modifier.semantics {
-                                        contentDescription = "Proportional Algorithm"
+                                        contentDescription = ttsProportionalAlgorithm
                                     },
                                     enabled = algo.isAvailable(),
                                     text = { Text(algo.getName(context)) },
@@ -446,7 +451,9 @@ fun ResultScreen(
             }
 
             if (amountOfBallots > 0) {
-                Text(stringResource(R.string.opinion_profile))
+                Text(
+                    text = stringResource(R.string.opinion_profile),
+                )
                 SmallVerticalSpacer()
 
                 val pollTallyAsProposalTally = ProposalTally(
@@ -473,9 +480,6 @@ fun ResultScreen(
                     poll = poll,
                     tally = tally,
                     highestGradeToLowestGrade = highGradeOnLeft,
-                )
-                PlotTitle(
-                    text = stringResource(R.string.plot_title_opinion_profile),
                 )
                 MediumVerticalSpacer()
             }
