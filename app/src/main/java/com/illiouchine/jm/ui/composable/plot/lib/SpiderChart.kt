@@ -14,6 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,9 +77,23 @@ fun SpiderChart(
             radialAxisModel = rememberFloatRadialAxisModel(tickValues),
             angularAxisModel = rememberCategoryAngularAxisModel(indexedCategories),
             radialAxisLabels = {
+                val labelValue = it.toDouble().smartFormat(tickDecimals)
+                val labelStyle = TextStyle.Default
+                // Outline
                 Text(
-                    text = it.toDouble().smartFormat(tickDecimals),
-                    style = TextStyle.Default,
+                    text = labelValue,
+                    style = labelStyle.copy(
+                        color = Theme.colorScheme.background,
+                        drawStyle = Stroke(
+                            width = 6f,
+                            join = StrokeJoin.Round,
+                        ),
+                    ),
+                )
+                // Fill
+                Text(
+                    text = labelValue,
+                    style = labelStyle,
                 )
             },
             angularAxisLabels = {

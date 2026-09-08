@@ -40,9 +40,10 @@ fun ProximitySpider(
 ) {
     val proposalsInitials = makeProposalsInitials(analysis)
 
+    val relativeMinimum = analysis.minima[selectedProposalIndex]
     val neutral = analysis.neutrals[selectedProposalIndex]
     val tickValues = buildList {
-        add(-1f)
+        add(relativeMinimum.toFloat())
         add(neutral.toFloat())
         add(1f)
     }
