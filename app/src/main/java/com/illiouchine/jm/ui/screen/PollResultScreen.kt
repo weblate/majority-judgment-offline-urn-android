@@ -494,10 +494,6 @@ fun ResultScreen(
                     poll = poll,
                     moreNuanceToLessNuance = highGradeOnLeft,
                 )
-                PlotTitle(
-                    modifier = Modifier.padding(top = Theme.spacing.tiny),
-                    text = stringResource(R.string.plot_title_nuance_profile),
-                )
                 MediumVerticalSpacer()
             }
 
