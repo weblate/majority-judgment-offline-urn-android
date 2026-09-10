@@ -50,9 +50,14 @@ fun PollSummary(
             .semantics(
                 mergeDescendants = true,
             ) {
-                // Specify the onClick, or TalkBack picks the Clone action for some reason
+                // Specify the onClick, or TalkBack picks the Clone action for some reason.
+                // I have not found how to tell TalkBack NOT to provide an Activate action.
                 onClick {
-                    onShowResult(poll)
+                    if (poll.ballots.isNotEmpty()) {
+                        onShowResult(poll)
+                    } else {
+                        onResumePoll(poll)
+                    }
                     true
                 }
                 customActions = buildList {

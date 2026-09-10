@@ -96,11 +96,11 @@ fun HomeScreen(
                 .padding(horizontal = Theme.spacing.medium)
                 .verticalScroll(state = scrollState),
         ) {
-            val titleContentDescription = (
-                stringResource(R.string.majority_judgment) +
-                    " " +
-                    stringResource(R.string.menu_home)
-                )
+            val titleContentDescription = buildString {
+                append(stringResource(R.string.majority_judgment))
+                append(" ")
+                append(stringResource(R.string.menu_home))
+            }
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
