@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,50 +50,71 @@ fun PollSummary(
             .semantics(
                 mergeDescendants = true,
             ) {
-                customActions = listOf(
-                    CustomAccessibilityAction(
-                        label = res.getString(R.string.action_inspect),
-                        action = {
-                            onShowResult(poll)
-                            true
-                        }
-                    ),
-                    CustomAccessibilityAction(
-                        label = res.getString(R.string.action_resume),
-                        action = {
-                            onResumePoll(poll)
-                            true
-                        }
-                    ),
-                    CustomAccessibilityAction(
-                        label = res.getString(R.string.action_clone),
-                        action = {
-                            onSetupClonePoll(poll)
-                            true
-                        }
-                    ),
-                    CustomAccessibilityAction(
-                        label = res.getString(R.string.action_export_poll),
-                        action = {
-                            onExportPoll(poll)
-                            true
-                        }
-                    ),
-                    CustomAccessibilityAction(
-                        label = res.getString(R.string.action_export_ballots),
-                        action = {
-                            onExportBallots(poll)
-                            true
-                        }
-                    ),
-                    CustomAccessibilityAction(
-                        label = res.getString(R.string.action_delete),
-                        action = {
-                            onDeletePoll(poll)
-                            true
-                        }
-                    ),
-                )
+                // Specify the onClick, or TalkBack picks the Clone action for some reason
+                onClick {
+                    onShowResult(poll)
+                    true
+                }
+                customActions = buildList {
+                    if (poll.ballots.isNotEmpty()) {
+                        add(
+                            CustomAccessibilityAction(
+                                label = res.getString(R.string.action_inspect),
+                                action = {
+                                    onShowResult(poll)
+                                    true
+                                },
+                            )
+                        )
+                    }
+                    add(
+                        CustomAccessibilityAction(
+                            label = res.getString(R.string.action_resume),
+                            action = {
+                                onResumePoll(poll)
+                                true
+                            },
+                        )
+                    )
+                    add(
+                        CustomAccessibilityAction(
+                            label = res.getString(R.string.action_clone),
+                            action = {
+                                onSetupClonePoll(poll)
+                                true
+                            },
+                        )
+                    )
+                    add(
+                        CustomAccessibilityAction(
+                            label = res.getString(R.string.action_export_poll),
+                            action = {
+                                onExportPoll(poll)
+                                true
+                            },
+                        )
+                    )
+                    if (poll.ballots.isNotEmpty()) {
+                        add(
+                            CustomAccessibilityAction(
+                                label = res.getString(R.string.action_export_ballots),
+                                action = {
+                                    onExportBallots(poll)
+                                    true
+                                },
+                            )
+                        )
+                    }
+                    add(
+                        CustomAccessibilityAction(
+                            label = res.getString(R.string.action_delete),
+                            action = {
+                                onDeletePoll(poll)
+                                true
+                            },
+                        )
+                    )
+                }
             },
     ) {
         Column {
