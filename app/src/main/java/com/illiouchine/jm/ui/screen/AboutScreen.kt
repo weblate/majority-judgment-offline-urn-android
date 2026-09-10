@@ -98,7 +98,7 @@ fun AboutScreen(
                 )
             }
 
-            Column (
+            Column(
                 modifier = Modifier.semantics(mergeDescendants = true) {},
             ) {
                 Text(
@@ -246,8 +246,10 @@ fun AboutScreen(
 @Composable
 fun PreviewAboutScreen(modifier: Modifier = Modifier) {
     JmTheme {
-        AboutScreen(
-            modifier = modifier,
-        )
+        MjuScaffold {
+            AboutScreen(
+                modifier = modifier,
+            )
+        }
     }
 }

@@ -62,6 +62,7 @@ fun PollVotingScreen(
     onDismissFeedback: () -> Unit = {},
 ) {
     val context = LocalContext.current
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -121,7 +122,7 @@ fun PollVotingScreen(
                         onClick = { onStartVoting() },
                         content = {
                             Text(stringResource(R.string.button_be_the_first_to_vote))
-                        }
+                        },
                     )
                 } else {
                     Button(
@@ -131,7 +132,7 @@ fun PollVotingScreen(
                         onClick = { onStartVoting() },
                         content = {
                             Text(stringResource(R.string.button_next_participant))
-                        }
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.height(Theme.spacing.large))
@@ -242,7 +243,7 @@ private fun PreviewVotingScreenWithBallots(modifier: Modifier = Modifier) {
             pollVotingState = PollVotingViewModel.PollVotingViewState(
                 pollConfig = PreviewDataFaker.pollConfig(),
                 ballots = listOf(
-                    Ballot(judgments = PreviewDataFaker.judgments(1))
+                    Ballot(judgments = PreviewDataFaker.judgments(1)),
                 ),
                 currentBallot = null,
             ),
@@ -265,7 +266,7 @@ private fun PreviewVotingScreenConfirmation(modifier: Modifier = Modifier) {
                     // Ballot(judgments = listOf(Judgment(proposal = 1, grade = 3)))
                 ),
                 currentBallot = Ballot(
-                    judgments = PreviewDataFaker.judgments(3)
+                    judgments = PreviewDataFaker.judgments(3),
                 ),
             ),
         )
@@ -289,7 +290,7 @@ private fun PreviewVotingSmallScreenConfirmation(modifier: Modifier = Modifier) 
                     // Ballot(judgments = listOf(Judgment(proposal = 1, grade = 3)))
                 ),
                 currentBallot = Ballot(
-                    judgments = PreviewDataFaker.judgments(3)
+                    judgments = PreviewDataFaker.judgments(3),
                 ),
             ),
         )

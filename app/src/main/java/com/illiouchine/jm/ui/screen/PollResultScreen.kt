@@ -320,7 +320,7 @@ fun ResultScreen(
                                         "   %s%%",
                                         (100 * shownProportions[proposalResult.index]).smartFormat(
                                             maxDecimals = 2,
-                                        )
+                                        ),
                                     )
                                 }
                             }
