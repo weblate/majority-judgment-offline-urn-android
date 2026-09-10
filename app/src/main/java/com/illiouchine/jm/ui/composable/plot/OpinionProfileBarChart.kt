@@ -75,7 +75,12 @@ fun OpinionProfileBarChart(
         buildString {
             poll.pollConfig.grading.grades
                 .reversedIf(highestGradeToLowestGrade)
-                .forEachIndexed { gradeIndex, grade ->
+                .forEachIndexed { i, grade ->
+                    val gradeIndex = if (highestGradeToLowestGrade) {
+                        poll.pollConfig.grading.grades.size - 1 - i
+                    } else {
+                        i
+                    }
                     val value = tally.proposalsTallies.sumOf { proposalTally ->
                         proposalTally.tally[gradeIndex]
                     }
