@@ -209,7 +209,7 @@ fun ResultScreen(
                         ) {
                             DropdownMenuItem(
                                 text = {
-                                    Text("Filter by Grade")
+                                    Text(stringResource(R.string.label_filter_by_grade))
                                 },
                                 onClick = {
                                     newBallotsFilterDropdownExpanded = false
@@ -224,7 +224,7 @@ fun ResultScreen(
                             )
                             DropdownMenuItem(
                                 text = {
-                                    Text("Filter by Nuance")
+                                    Text(stringResource(R.string.label_filter_by_nuance))
                                 },
                                 onClick = {
                                     newBallotsFilterDropdownExpanded = false
