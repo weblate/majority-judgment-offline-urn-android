@@ -172,17 +172,18 @@ fun ResultScreen(
                 ballotsFilter = ballotsFilter,
                 onClick = {
                     ballotsFiltersExpanded = !ballotsFiltersExpanded
-                }
+                },
             )
 
             if (ballotsFiltersExpanded) {
                 // Rule: for simplicity, for now, only one filter is allowed.
                 // Eventually; we'd love a filters tree (AND/OR) like in Factorio for example.
+                // But it's a lot of work for little gain ; feel free to take this on.
 
                 SmallVerticalSpacer()
 
                 if (ballotsFilter is NoBallotsFilter) {
-                    Text("No filter is applied on the ballots.")
+                    Text("No filter is currently applied on the ballots.")
 
                     // The purpose of this Column is to position the DropdownMenu adequately.
                     // Without it, it appears at the bottom of the screen, which is weird.
@@ -208,7 +209,7 @@ fun ResultScreen(
                         ) {
                             DropdownMenuItem(
                                 text = {
-                                    Text("Filter by grade")
+                                    Text("Filter by Grade")
                                 },
                                 onClick = {
                                     newBallotsFilterDropdownExpanded = false
@@ -223,7 +224,7 @@ fun ResultScreen(
                             )
                             DropdownMenuItem(
                                 text = {
-                                    Text("Filter by nuance")
+                                    Text("Filter by Nuance")
                                 },
                                 onClick = {
                                     newBallotsFilterDropdownExpanded = false
@@ -347,7 +348,7 @@ fun ResultScreen(
                         Spacer(
                             Modifier.padding(
                                 vertical = Theme.spacing.small + Theme.spacing.tiny,
-                            )
+                            ),
                         )
 
                         // Ux: Explanations are shown one at a time (exclusive toggle)
@@ -622,8 +623,6 @@ fun ResultScreen(
                 }
             }
             SmallVerticalSpacer()
-//            Text(rawTextResults)
-//            SmallVerticalSpacer()
 
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
