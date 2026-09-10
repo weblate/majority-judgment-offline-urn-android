@@ -94,7 +94,7 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = Theme.spacing.medium)
-                .verticalScroll(state = scrollState)
+                .verticalScroll(state = scrollState),
         ) {
             val titleContentDescription = (
                 stringResource(R.string.majority_judgment) +
@@ -182,7 +182,7 @@ fun HomeScreen(
 
             Text(
                 modifier = Modifier.padding(bottom = 16.dp),
-                text = stringResource(R.string.home_try_poll_templates)
+                text = stringResource(R.string.home_try_poll_templates),
             )
             homeViewState.templates.forEach { template ->
                 OutlinedButton(
@@ -222,9 +222,9 @@ fun PreviewHomeScreen(modifier: Modifier = Modifier) {
                 polls = listOf(
                     PreviewDataFaker.poll(0, 3),
                     PreviewDataFaker.poll(1, 0),
-                    PreviewDataFaker.poll(1, 2)
-                )
-            )
+                    PreviewDataFaker.poll(1, 2),
+                ),
+            ),
         )
     }
 }
@@ -237,7 +237,7 @@ fun PreviewHomeScreenWithEmptyPoll(modifier: Modifier = Modifier) {
             modifier = modifier,
             homeViewState = HomeViewModel.HomeViewState(
                 polls = emptyList(),
-            )
+            ),
         )
     }
 }
