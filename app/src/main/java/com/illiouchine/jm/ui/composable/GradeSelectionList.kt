@@ -42,35 +42,42 @@ fun GradeSelectionList(
 ) {
     val forProposalName = pollConfig.proposals[forProposalIndex]
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
+    // This Column's purpose is to merge its descendants for TTS accessibility.
+    Column(
+        modifier = Modifier.semantics(mergeDescendants = true) {},
     ) {
-        Text(
-            text = stringResource(R.string.all_things_considered_i_think),
-            fontStyle = FontStyle.Italic,
-        )
-    }
-    // Using Row here instead won't center the text on the phone, even though it does in the preview
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = forProposalName,
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp,
-            lineHeight = 24.sp,
-        )
-    }
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = stringResource(R.string.verb_is),
-            fontStyle = FontStyle.Italic,
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.all_things_considered_i_think),
+                fontStyle = FontStyle.Italic,
+            )
+        }
+
+        // Using Row here instead won't center the text on the phone, even though it does in the preview
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = forProposalName,
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp,
+                lineHeight = 24.sp,
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.verb_is),
+                fontStyle = FontStyle.Italic,
+            )
+        }
     }
 
     var selectedGradeIndex: Int? by remember { mutableStateOf(null) }
@@ -105,7 +112,7 @@ fun GradeSelectionList(
             enabled = ((selectedGradeIndex == null) || (selectedGradeIndex == gradeIndex)),
             text = gradeName.uppercase(),
             bgColor = pollConfig.grading.getGradeColor(gradeIndex),
-            fgColor = pollConfig.grading.getGradeTextColor(gradeIndex)
+            fgColor = pollConfig.grading.getGradeTextColor(gradeIndex),
         ) {
             if (selectedGradeIndex == null) {
                 selectedGradeIndex = gradeIndex
@@ -127,7 +134,7 @@ private fun Preview7GradeList() {
             GradeSelectionList(
                 pollConfig = PreviewDataFaker.pollConfig(),
                 forProposalIndex = 2,
-                onGradeSelected = {}
+                onGradeSelected = {},
             )
         }
     }
@@ -141,7 +148,7 @@ private fun Preview5GradeList() {
             GradeSelectionList(
                 pollConfig = PreviewDataFaker.pollConfig(grading = Grading.Quality7Grading),
                 forProposalIndex = 2,
-                onGradeSelected = {}
+                onGradeSelected = {},
             )
         }
     }

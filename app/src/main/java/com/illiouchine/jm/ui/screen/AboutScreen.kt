@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation3.runtime.NavKey
@@ -97,16 +98,20 @@ fun AboutScreen(
                 )
             }
 
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.about_this_app_is_libre_software),
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = stringResource(R.string.about_help_us_make_it_better),
-            )
+            Column(
+                modifier = Modifier.semantics(mergeDescendants = true) {},
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = stringResource(R.string.about_this_app_is_libre_software),
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = stringResource(R.string.about_help_us_make_it_better),
+                )
+            }
 
             Spacer(Modifier.padding(Theme.spacing.small))
 
@@ -241,8 +246,10 @@ fun AboutScreen(
 @Composable
 fun PreviewAboutScreen(modifier: Modifier = Modifier) {
     JmTheme {
-        AboutScreen(
-            modifier = modifier,
-        )
+        MjuScaffold {
+            AboutScreen(
+                modifier = modifier,
+            )
+        }
     }
 }

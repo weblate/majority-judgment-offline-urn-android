@@ -1,3 +1,7 @@
 * Refactor daisy-chaining via QR codes
-* Refactor Composable previews to use dependency injection
-* Export results as raw text, for printing and sharing
+* Change QR Code URLs scheme from mju:// to https:// (still fully offline)
+* Refactor Composable Previews to use dependency injection too
+* Allow exporting results as raw text, for printing and sharing (by YannickIngwiller67)
+* Improve TalkBack support of the opinion profile
+* Improve TalkBack support of the nuance profile
+* Fix unavailable actions being selectable when using TalkBack

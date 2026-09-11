@@ -172,17 +172,18 @@ fun ResultScreen(
                 ballotsFilter = ballotsFilter,
                 onClick = {
                     ballotsFiltersExpanded = !ballotsFiltersExpanded
-                }
+                },
             )
 
             if (ballotsFiltersExpanded) {
                 // Rule: for simplicity, for now, only one filter is allowed.
                 // Eventually; we'd love a filters tree (AND/OR) like in Factorio for example.
+                // But it's a lot of work for little gain ; feel free to take this on.
 
                 SmallVerticalSpacer()
 
                 if (ballotsFilter is NoBallotsFilter) {
-                    Text("No filter is applied on the ballots.")
+                    Text("No filter is currently applied on the ballots.")
 
                     // The purpose of this Column is to position the DropdownMenu adequately.
                     // Without it, it appears at the bottom of the screen, which is weird.
@@ -208,7 +209,7 @@ fun ResultScreen(
                         ) {
                             DropdownMenuItem(
                                 text = {
-                                    Text("Filter by grade")
+                                    Text(stringResource(R.string.label_filter_by_grade))
                                 },
                                 onClick = {
                                     newBallotsFilterDropdownExpanded = false
@@ -223,7 +224,7 @@ fun ResultScreen(
                             )
                             DropdownMenuItem(
                                 text = {
-                                    Text("Filter by nuance")
+                                    Text(stringResource(R.string.label_filter_by_nuance))
                                 },
                                 onClick = {
                                     newBallotsFilterDropdownExpanded = false
@@ -319,7 +320,7 @@ fun ResultScreen(
                                         "   %s%%",
                                         (100 * shownProportions[proposalResult.index]).smartFormat(
                                             maxDecimals = 2,
-                                        )
+                                        ),
                                     )
                                 }
                             }
@@ -347,7 +348,7 @@ fun ResultScreen(
                         Spacer(
                             Modifier.padding(
                                 vertical = Theme.spacing.small + Theme.spacing.tiny,
-                            )
+                            ),
                         )
 
                         // Ux: Explanations are shown one at a time (exclusive toggle)
@@ -389,7 +390,10 @@ fun ResultScreen(
 
                     Box {
                         val ttsChooseAProportionalAlgorithm = stringResource(
-                            R.string.tts_choose_a_proportional_algorithm
+                            id = R.string.tts_choose_a_proportional_algorithm,
+                        )
+                        val ttsProportionalAlgorithm = stringResource(
+                            id = R.string.proportional_algorithm,
                         )
                         TextButton(
                             modifier = Modifier.semantics {
@@ -414,7 +418,7 @@ fun ResultScreen(
                             for (algo in ProportionalAlgorithms.entries) {
                                 DropdownMenuItem(
                                     modifier = Modifier.semantics {
-                                        contentDescription = "Proportional Algorithm"
+                                        contentDescription = ttsProportionalAlgorithm
                                     },
                                     enabled = algo.isAvailable(),
                                     text = { Text(algo.getName(context)) },
@@ -446,7 +450,9 @@ fun ResultScreen(
             }
 
             if (amountOfBallots > 0) {
-                Text(stringResource(R.string.opinion_profile))
+                Text(
+                    text = stringResource(R.string.opinion_profile),
+                )
                 SmallVerticalSpacer()
 
                 val pollTallyAsProposalTally = ProposalTally(
@@ -474,9 +480,6 @@ fun ResultScreen(
                     tally = tally,
                     highestGradeToLowestGrade = highGradeOnLeft,
                 )
-                PlotTitle(
-                    text = stringResource(R.string.plot_title_opinion_profile),
-                )
                 MediumVerticalSpacer()
             }
 
@@ -489,10 +492,6 @@ fun ResultScreen(
                         .fillMaxWidth(),
                     poll = poll,
                     moreNuanceToLessNuance = highGradeOnLeft,
-                )
-                PlotTitle(
-                    modifier = Modifier.padding(top = Theme.spacing.tiny),
-                    text = stringResource(R.string.plot_title_nuance_profile),
                 )
                 MediumVerticalSpacer()
             }
@@ -624,8 +623,6 @@ fun ResultScreen(
                 }
             }
             SmallVerticalSpacer()
-//            Text(rawTextResults)
-//            SmallVerticalSpacer()
 
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),

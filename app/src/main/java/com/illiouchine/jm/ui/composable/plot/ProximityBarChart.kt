@@ -16,6 +16,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -46,8 +47,6 @@ import kotlin.math.abs
 fun ProximityBarChart(
     modifier: Modifier = Modifier,
     analysis: ProximityAnalysis,
-//    onProposalSelected: (Int) -> Unit = {},
-//    selectedProposalIndex: Int = 0,
 ) {
     val density = LocalDensity.current
 
@@ -72,10 +71,14 @@ fun ProximityBarChart(
     }
 
     XYGraph(
-        modifier = modifier.onGloballyPositioned {
-            @Suppress("AssignedValueIsNeverRead")
-            chartSize = it.size.toSize()
-        },
+        modifier = modifier
+            .onGloballyPositioned {
+                @Suppress("AssignedValueIsNeverRead")
+                chartSize = it.size.toSize()
+            }
+            // TalkBack's default behavior here is just noise, as it is.
+            // Later on, we'll figure out a way to provide a more useful description.
+            .clearAndSetSemantics {},
         xAxisModel = rememberFloatLinearAxisModel(range = -1f..1f, minorTickCount = 0),
         yAxisModel = remember(analysis) {
             CategoryAxisModel(
