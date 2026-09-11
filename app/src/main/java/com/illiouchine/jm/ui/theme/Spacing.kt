@@ -13,6 +13,7 @@ data object SpacingDefaults {
     internal const val SMALL = 8
     internal const val MEDIUM = 16
     internal const val LARGE = 32
+    internal const val EXTRA_LARGE = 48
     internal const val DEFAULT = SMALL
 }
 
@@ -23,6 +24,7 @@ data class Spacing(
     val small: Dp = SpacingDefaults.SMALL.dp,
     val medium: Dp = SpacingDefaults.MEDIUM.dp,
     val large: Dp = SpacingDefaults.LARGE.dp,
+    val extraLarge: Dp = SpacingDefaults.EXTRA_LARGE.dp,
 )
 
 val LocalSpacing = compositionLocalOf { Spacing() }
