@@ -93,7 +93,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = Theme.spacing.medium)
+                .padding(horizontal = Theme.spacing.tiny)
                 .verticalScroll(state = scrollState),
         ) {
             val titleContentDescription = buildString {
@@ -145,7 +145,10 @@ fun HomeScreen(
                 PollSummary(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = Theme.spacing.small),
+                        .padding(
+                            top = Theme.spacing.small,
+                            bottom = Theme.spacing.medium,
+                        ),
                     poll = poll,
                     onSetupClonePoll = { onSetupClonePoll(it) },
                     onResumePoll = { onResumePoll(it) },
@@ -155,13 +158,6 @@ fun HomeScreen(
                     },
                     onExportPoll = { onExportPoll(it) },
                     onExportBallots = { onExportBallots(it) },
-                )
-                Spacer(
-                    Modifier
-                        .padding(bottom = 48.dp)
-                        .height(1.dp)
-                        .fillMaxWidth()
-                        .background(Color.LightGray),
                 )
 
                 if (showDeletionDialog.value) {

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,6 +32,8 @@ import com.illiouchine.jm.model.PollConfig
 import com.illiouchine.jm.ui.preview.PreviewDataFaker
 import com.illiouchine.jm.ui.theme.DeleteColor
 import com.illiouchine.jm.ui.theme.JmTheme
+import com.illiouchine.jm.ui.theme.Theme
+import com.illiouchine.jm.ui.theme.spacing
 
 @OptIn(ExperimentalLayoutApi::class) // for FlowRow
 @Composable
@@ -122,75 +126,89 @@ fun PollSummary(
                 }
             },
     ) {
-        Column {
-            Text(
-                modifier = Modifier,
-                text = poll.pollConfig.subject,
-                fontWeight = FontWeight.Bold,
-            )
-            Row {
-                val sequenceOfProposals = StringBuilder()
-                poll.pollConfig.proposals.forEachIndexed { proposalIndex, proposal ->
-                    if (proposalIndex > 0) {
-                        sequenceOfProposals.append(", ")
-                    }
-                    sequenceOfProposals.append(proposal)
-                }
-
-                Text(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(top = 4.dp),
-                    text = sequenceOfProposals.toString(),
-                )
-
-                // homemade pluralStringResource ; NIH
-                val votesString = if (poll.ballots.size > 1) {
-                    stringResource(R.string.votes)
-                } else {
-                    stringResource(R.string.vote)
-                }
-                Text(
-                    modifier = Modifier.align(Alignment.Bottom),
-                    fontStyle = FontStyle.Italic,
-                    text = "(${poll.ballots.size} " + votesString + ")",
-                )
-            }
-            FlowRow(
+        ElevatedCard(
+            modifier = Modifier,
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp,
+            ),
+        ) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    // Disable the buttons for TalkBack, we're using accessibility actions instead.
-                    .clearAndSetSemantics {},
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                TextButton(
-                    enabled = poll.ballots.isNotEmpty(),
-                    onClick = { onShowResult(poll) },
-                ) {
-                    Text(stringResource(R.string.action_inspect))
-                }
-                TextButton(onClick = { onResumePoll(poll) }) {
-                    Text(stringResource(R.string.action_resume))
-                }
-                TextButton(onClick = { onSetupClonePoll(poll) }) {
-                    Text(stringResource(R.string.action_clone))
-                }
-                TextButton(onClick = { onExportPoll(poll) }) {
-                    Text(stringResource(R.string.action_export_poll))
-                }
-                TextButton(
-                    enabled = poll.ballots.isNotEmpty(),
-                    onClick = { onExportBallots(poll) },
-                ) {
-                    Text(stringResource(R.string.action_export_ballots))
-                }
-                TextButton(
-                    onClick = { onDeletePoll(poll) },
-                    colors = ButtonDefaults.textButtonColors().copy(
-                        contentColor = DeleteColor,
+                    .padding(
+                        top = Theme.spacing.small,
+                        start = Theme.spacing.small,
+                        end = Theme.spacing.small,
                     ),
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = poll.pollConfig.subject,
+                    fontWeight = FontWeight.Bold,
+                )
+                Row {
+                    val sequenceOfProposals = StringBuilder()
+                    poll.pollConfig.proposals.forEachIndexed { proposalIndex, proposal ->
+                        if (proposalIndex > 0) {
+                            sequenceOfProposals.append(", ")
+                        }
+                        sequenceOfProposals.append(proposal)
+                    }
+
+                    Text(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(top = 4.dp),
+                        text = sequenceOfProposals.toString(),
+                    )
+
+                    // homemade pluralStringResource ; NIH
+                    val votesString = if (poll.ballots.size > 1) {
+                        stringResource(R.string.votes)
+                    } else {
+                        stringResource(R.string.vote)
+                    }
+                    Text(
+                        modifier = Modifier.align(Alignment.Bottom),
+                        fontStyle = FontStyle.Italic,
+                        text = "(${poll.ballots.size} " + votesString + ")",
+                    )
+                }
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        // Disable the buttons for TalkBack, we're using accessibility actions instead.
+                        .clearAndSetSemantics {},
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
-                    Text(stringResource(R.string.action_delete))
+                    TextButton(
+                        enabled = poll.ballots.isNotEmpty(),
+                        onClick = { onShowResult(poll) },
+                    ) {
+                        Text(stringResource(R.string.action_inspect))
+                    }
+                    TextButton(onClick = { onResumePoll(poll) }) {
+                        Text(stringResource(R.string.action_resume))
+                    }
+                    TextButton(onClick = { onSetupClonePoll(poll) }) {
+                        Text(stringResource(R.string.action_clone))
+                    }
+                    TextButton(onClick = { onExportPoll(poll) }) {
+                        Text(stringResource(R.string.action_export_poll))
+                    }
+                    TextButton(
+                        enabled = poll.ballots.isNotEmpty(),
+                        onClick = { onExportBallots(poll) },
+                    ) {
+                        Text(stringResource(R.string.action_export_ballots))
+                    }
+                    TextButton(
+                        onClick = { onDeletePoll(poll) },
+                        colors = ButtonDefaults.textButtonColors().copy(
+                            contentColor = DeleteColor,
+                        ),
+                    ) {
+                        Text(stringResource(R.string.action_delete))
+                    }
                 }
             }
         }
